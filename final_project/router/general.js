@@ -29,28 +29,65 @@ public_users.get('/',function (req, res) {
 public_users.get('/isbn/:isbn',function (req, res) {
 
   // Retrieve the isbn parameter from the URL and send the corresponding book details
-  const isbn = req.params.isbn;
+  try {
+    const isbn = req.params.isbn;
 
-  res.send(books[isbn]);
+    res.send(books[isbn]);
+  }
+  // Respond with message in case of error
+  catch(err) {
+    res.status(500).json({ message: "Server Encountered an Error. It's Not You, It's Us"})
+  }
 
 });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  
+  // Retrieve the author parameter from the URL
+  const authorName = req.params.author;
+
+  // Filter the 'books' object and check for books with author in URL parameter
+  const matchingBooks = Object.values(books).filter(book => book.author.toLowerCase() === authorName.toLowerCase());
+
+  // Show the book if found or show error message
+  if (matchingBooks.length > 0) {
+    res.json(matchingBooks);
+  } else {
+    res.status(404).json({ message: "Haven't Heard of That One..."});
+  }
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+
+  // Retrieve the author parameter from the URL
+  const bookTitle = req.params.title;
+
+  // Filter the 'books' object and check for books with the title in URL parameter
+  const matchingBooks = Object.values(books).filter(book => book.title.toLowerCase() === bookTitle.toLowerCase());
+
+  // Show the book if found or show error message
+  if (matchingBooks.length > 0) {
+    res.json(matchingBooks);
+  } else {
+    res.status(404).json({ message: "Haven't Heard of That One..."});
+  }
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  
+  try {
+    const isbn = req.params.isbn;
+
+    let matchingBook = books[isbn];
+
+    res.send(matchingBook.reviews);
+  }
+  catch(err) {
+    res.status(404).json({ message: "Haven't Heard of That One..."})
+  }
 });
 
 module.exports.general = public_users;
