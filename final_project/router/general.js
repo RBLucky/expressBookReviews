@@ -4,24 +4,33 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
-
+// Register new user
 public_users.post("/register", (req,res) => {
 
+  // Retrieve username and password from request body
   let username = req.body.username;
   let password = req.body.password;
 
+  // Ensure username is provided
   if (!username) {
     res.json({ error: "You Must Provide a Username!"});
   }
 
+  // Ensure password is provided
   if (!password) {
     res.json({ error: "You Must Provide a Valid Password!"});
   }
 
+  // Ensure provided username and password are valid
   if (username && password) {
     if (isValid(username)) {
+      // If valid, add to existing users
       users.push({ "username": username, "password": password });
+      // Notify success
       return res.status(200).json({ message: "User successfully registered! You can now login." });
+    } else {
+      // Notify failure to register in case of error
+      res.status(400).json({ message: "User Already Exists!"});
     }
   }
 
