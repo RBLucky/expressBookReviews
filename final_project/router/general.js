@@ -24,13 +24,18 @@ public_users.post("/register", (req,res) => {
   // Ensure provided username and password are valid
   if (username && password) {
     if (isValid(username)) {
+
       // If valid, add to existing users
       users.push({ "username": username, "password": password });
+
       // Notify success
       return res.status(200).json({ message: "User successfully registered! You can now login." });
+
     } else {
+
       // Notify failure to register in case of error
-      res.status(400).json({ message: "User Already Exists!"});
+      res.status(400).json({ error: "User Already Exists!"});
+
     }
   }
 
@@ -44,9 +49,10 @@ public_users.get('/',function (req, res) {
   try {
     res.send(JSON.stringify(books, null, 4));
   }
+
   // Show error message in case of error
   catch(err) {
-    return res.status(404).json({ message: "Looks like our shelves are empty" });
+    return res.status(404).json({ error: "Looks like our shelves are empty" });
   }
 
 });
@@ -60,6 +66,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
 
     res.send(books[isbn]);
   }
+  
   // Respond with message in case of error
   catch(err) {
     res.status(500).json({ message: "Server Encountered an Error. It's Not You, It's Us"})
@@ -80,8 +87,9 @@ public_users.get('/author/:author',function (req, res) {
   if (matchingBooks.length > 0) {
     res.json(matchingBooks);
   } else {
-    res.status(404).json({ message: "Haven't Heard of That One..."});
+    res.status(404).json({ error: "Haven't Heard of That One..."});
   }
+
 });
 
 // Get all books based on title
@@ -97,7 +105,7 @@ public_users.get('/title/:title',function (req, res) {
   if (matchingBooks.length > 0) {
     res.json(matchingBooks);
   } else {
-    res.status(404).json({ message: "Haven't Heard of That One..."});
+    res.status(404).json({ error: "Haven't Heard of That One..."});
   }
 });
 
@@ -114,9 +122,10 @@ public_users.get('/review/:isbn',function (req, res) {
     // Respond with book reviews object
     res.send(matchingBook.reviews);
   }
-  // Handle error response in case of an error
+
+  // Handle response in case of an error
   catch(err) {
-    res.status(404).json({ message: "Haven't Heard of That One..."})
+    res.status(404).json({ error: "Haven't Heard of That One..."})
   }
 });
 
